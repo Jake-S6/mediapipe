@@ -206,14 +206,6 @@ absl::Status UmpPipeline::RunImpl()
 
 	if (_use_camera)
 	{
-		#if defined(_WIN32)
-		if (_cam_api == cv::CAP_ANY)
-		{
-			// CAP_MSMF is broken on windows! use CAP_DSHOW by default, also see: https://github.com/opencv/opencv/issues/17687
-			_cam_api = cv::CAP_DSHOW;
-		}
-		#endif
-
 		capture.open(_cam_id, _cam_api);
 	}
 	else
