@@ -33,9 +33,10 @@ class InferenceCalculatorSelectorImpl
   absl::StatusOr<CalculatorGraphConfig> GetConfig(
       const CalculatorGraphConfig::Node& subgraph_node) {
     const auto& options =
-        Subgraph::GetOptions<::mediapipe::InferenceCalculatorOptions>(
+        Subgraph::GetOptions<mediapipe::InferenceCalculatorOptions>(
             subgraph_node);
     std::vector<absl::string_view> impls;
+
     const bool should_use_gpu =
         !options.has_delegate() ||  // Use GPU delegate if not specified
         (options.has_delegate() && options.delegate().has_gpu());

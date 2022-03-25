@@ -54,6 +54,7 @@ mediapipe_register_type(
     types = [
         "::mediapipe::Classification",
         "::mediapipe::ClassificationList",
+        "::mediapipe::ClassificationListCollection",
         "::std::vector<::mediapipe::Classification>",
         "::std::vector<::mediapipe::ClassificationList>",
     ],
@@ -78,6 +79,12 @@ mediapipe_proto_library(
     portable_deps = ["//mediapipe/framework/formats/annotation:rasterization_cc_proto"],
     visibility = ["//visibility:public"],
     deps = ["//mediapipe/framework/formats/annotation:rasterization_proto"],
+)
+
+mediapipe_proto_library(
+    name = "affine_transform_data_proto",
+    srcs = ["affine_transform_data.proto"],
+    visibility = ["//visibility:public"],
 )
 
 mediapipe_proto_library(
@@ -115,6 +122,31 @@ cc_library(
         "//mediapipe/framework/port:ret_check",
         "//mediapipe/framework/port:status",
         "@eigen_archive//:eigen3",
+    ],
+)
+
+cc_library(
+    name = "affine_transform",
+    srcs = ["affine_transform.cc"],
+    hdrs = ["affine_transform.h"],
+    visibility = [
+        "//visibility:public",
+    ],
+    deps = [
+        "//mediapipe/framework:port",
+        "//mediapipe/framework:type_map",
+        "//mediapipe/framework/formats:affine_transform_data_cc_proto",
+        "//mediapipe/framework/port:integral_types",
+        "//mediapipe/framework/port:logging",
+        "//mediapipe/framework/port:point",
+        "//mediapipe/framework/port:ret_check",
+        "//mediapipe/framework/port:status",
+        "//mediapipe/framework/port:statusor",
+        "//mediapipe/framework/tool:status_util",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/strings",
+        "@com_google_protobuf//:protobuf",
     ],
 )
 
@@ -262,8 +294,10 @@ mediapipe_register_type(
     types = [
         "::mediapipe::Landmark",
         "::mediapipe::LandmarkList",
+        "::mediapipe::LandmarkListCollection",
         "::mediapipe::NormalizedLandmark",
         "::mediapipe::NormalizedLandmarkList",
+        "::mediapipe::NormalizedLandmarkListCollection",
         "::std::vector<::mediapipe::Landmark>",
         "::std::vector<::mediapipe::LandmarkList>",
         "::std::vector<::mediapipe::NormalizedLandmark>",
@@ -298,15 +332,13 @@ cc_library(
         "//mediapipe/framework:port",
         "//mediapipe/framework:type_map",
         "//mediapipe/framework/port:logging",
+        "//mediapipe/gpu:gpu_buffer",
+        "//mediapipe/gpu:gpu_buffer_format",
     ] + select({
         "//conditions:default": [
-            "//mediapipe/gpu:gpu_buffer",
-            "//mediapipe/gpu:gpu_buffer_format",
             "//mediapipe/gpu:gl_texture_buffer",
         ],
         "//mediapipe:ios": [
-            "//mediapipe/gpu:gpu_buffer",
-            "//mediapipe/gpu:gpu_buffer_format",
         ],
         "//mediapipe/gpu:disable_gpu": [],
     }) + select({
@@ -396,7 +428,10 @@ cc_test(
 
 cc_library(
     name = "tensor",
-    srcs = ["tensor.cc"],
+    srcs =
+        [
+            "tensor.cc",
+        ],
     hdrs = ["tensor.h"],
     copts = select({
         "//mediapipe:apple": [

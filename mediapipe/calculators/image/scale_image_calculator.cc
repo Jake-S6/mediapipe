@@ -262,6 +262,7 @@ absl::Status ScaleImageCalculator::InitializeFrameInfo(CalculatorContext* cc) {
       scale_image::FindOutputDimensions(crop_width_, crop_height_,         //
                                         options_.target_width(),           //
                                         options_.target_height(),          //
+                                        options_.target_max_area(),        //
                                         options_.preserve_aspect_ratio(),  //
                                         options_.scale_to_multiple_of(),   //
                                         &output_width_, &output_height_));
@@ -552,7 +553,6 @@ absl::Status ScaleImageCalculator::Process(CalculatorContext* cc) {
     }
   }
 
-  cc->GetCounter("Inputs")->Increment();
   const ImageFrame* image_frame;
   ImageFrame converted_image_frame;
   if (input_format_ == ImageFormat::YCBCR420P) {

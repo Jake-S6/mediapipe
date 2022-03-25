@@ -82,7 +82,7 @@ class InputStreamHandler {
   // flat_input_stream_managers is expected to point to a contiguous
   // flat array with InputStreamManagers corresponding to the id's in
   // InputStreamHandler::input_stream_managers_ (meaning it should point
-  // to somewhere in the middle of the master flat array of all input
+  // to somewhere in the middle of the main flat array of all input
   // stream managers).
   absl::Status InitializeInputStreamManagers(
       InputStreamManager* flat_input_stream_managers);
@@ -147,8 +147,7 @@ class InputStreamHandler {
 
   void Close();
 
-  // Returns a std::string that concatenates the stream names of all managed
-  // streams.
+  // Returns a string that concatenates the stream names of all managed streams.
   std::string DebugStreamNames() const;
 
   // Keeps scheduling new invocations until 1) the node is not ready or 2) the
